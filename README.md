@@ -62,11 +62,73 @@
 3聚类阶段：选择适合的聚类模型，这里我们采用 GMM 高斯混合模型进行聚类，并输出聚类结果，对结果进行分析。
 
 
+## adaboost 
+分类 回归分析
+在数据挖掘中，分类算法可以说是核心算法，其中 AdaBoost 算法与随机森林算法一样都属于分类算法中的集成算法。
+通过训练不同的弱分类器，将这些弱分类器集成起来形成一个强分类器。在每一轮的训练中都会加入一个新的弱分类器，直到达到足够低的错误率或者达到指定的最大迭代次数为止。实际上每一次迭代都会引入一个新的弱分类器（这个分类器是每一次迭代中计算出来的，是新的分类器，不是事先准备好的）。
+## 随机森林
+随机森林的英文是 Random Forest，英文简写是 RF。它实际上是一个包含多个决策树的分类器，每一个子分类器都是一棵 CART 分类回归树。所以随机森林既可以做分类，又可以做回归。当它做分类的时候，输出结果是每个子分类器的分类结果中最多的那个。你可以理解是每个分类器都做投票，取投票最多的那个结果。当它做回归的时候，输出结果是每棵 CART 树的回归结果的平均值。
+
+```
+
+# -*- coding: utf-8 -*-
+# 使用RandomForest对IRIS数据集进行分类
+# 利用GridSearchCV寻找最优参数,使用Pipeline进行流水作业
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
+from sklearn.datasets import load_iris
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import Pipeline
+rf = RandomForestClassifier()
+parameters = {"randomforestclassifier__n_estimators": range(1,11)}
+iris = load_iris()
+pipeline = Pipeline([
+        ('scaler', StandardScaler()),
+        ('randomforestclassifier', rf)
+])
+# 使用GridSearchCV进行参数调优
+clf = GridSearchCV(estimator=pipeline, param_grid=parameters)
+# 对iris数据集进行分类
+clf.fit(iris.data, iris.target)
+print("最优分数： %.4lf" %clf.best_score_)
+print("最优参数：", clf.best_params_)
+运行结果：
+最优分数： 0.9667
+最优参数： {'randomforestclassifier__n_estimators': 9}
+```
+#### 案例分析 信用卡违约率
+
+流程
+
+1.加载数据；
+
+2.准备阶段：探索数据，采用数据可视化方式可以让我们对数据有更直观的了解，比如我们想要了解信用卡违约率和不违约率的人数。因为数据集没有专门的测试集，我们还需要使用 train_test_split 划分数据集。
+
+3.分类阶段：之所以把数据规范化放到这个阶段，是因为我们可以使用 Pipeline 管道机制，将数据规范化设置为第一步，分类为第二步。因为我们不知道采用哪个分类器效果好，所以我们需要多用几个分类器，比如 SVM、决策树、随机森林和 KNN。然后通过 GridSearchCV 工具，找到每个分类器的最优参数和最优分数，最终找到最适合这个项目的分类器和该分类器的参数。
+
+
+代码文件 analysis_pro/credit_card_demo_1.py
+
+## 逻辑回归
+也叫作 logistic 回归。虽然名字中带有“回归”，但它实际上是分类方法，主要解决的是二分类问题，当然它也可以解决多分类问题，只是二分类更常见一些
+在逻辑回归中使用了 Logistic 函数，也称为 Sigmoid 函数
+项目流程
+	数据探索、数据规范化、数据集划分
+	模型创建、模型训练、模型评估
+
+## 模型评估指标
+TP：预测为正，判断正确；
+
+FP：预测为正，判断错误；
+
+TN：预测为负，判断正确；
+
+FN：预测为负，判断错误。
+
+F1 作为精确率 P 和召回率 R 的调和平均，数值越大代表模型的结果越好。
+
 ## 关联规则挖掘
 
 
 ## pageRank
 
-
-## adaboost 
-分类 回归分析
