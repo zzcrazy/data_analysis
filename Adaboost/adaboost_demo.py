@@ -5,8 +5,8 @@ from sklearn.datasets import load_boston
 from sklearn.ensemble import AdaBoostRegressor
 # 加载数据
 data=load_boston()
-print(data['data'])
-exit()
+# print(data['data'])
+# exit()
 # 分割数据
 train_x, test_x, train_y, test_y = train_test_split(data.data, data.target, test_size=0.25, random_state=33)
 print(train_x.shape)
